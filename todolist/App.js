@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,20 @@ import {
 import Task from "./components/Task";
 
 export default function App() {
+  const [task, setTask] = useState();
+  const [taskItems, setTaskItems] = useState([]);
+
+  const handleAddTask = () => {
+    setTaskItems([...taskItems, task])
+    setTask(null);
+  }
+
+  const completeTask = (index) => {
+       let itemsCopy = [...taskItems];
+       itemsCopy.splice(index, 1);
+       setTaskItems(itemsCopy);
+  }
+
   return (
     <View style={styles.container}>
       {/* Todays tasks */}
@@ -19,19 +33,30 @@ export default function App() {
 
         <View style={styles.items}>
           {/* This is where tasks will go */}
+          {
+            taskItems.map((item, index) => {
+             return (
+              <TouchableOpacity key={index}  onPress={() => completeTask(index)}>
+              <Task text={item} />
+              </TouchableOpacity>
+             ) 
 
-          <Task text={"Task 1"} />
-          <Task text={"Task 2"} />
+             
+            })
+          }
+
+          {/* <Task text={"Task 1"} />
+          <Task text={"Task 2"} /> */}
         </View>
       </View>
-      // Write a task
+      {/* Write a task */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.writeTaskWrapper}
       >
-        <TextInput style={styles.input} placeholder={'Write a task'} />
+        <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)} />
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => handleAddTask()}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
           </View>
@@ -65,4 +90,26 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  input: {
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    backgroundColor: "#ffffff",
+    borderRadius: 25,
+    borderColor: "#cd2028",
+    opacity: 0.6,
+    borderWidth: 2,
+    width: 250,
+  },
+  addWrapper: {
+    width: 60,
+    height: 60,
+    borderColor: "#166c96",
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+  },
+  addText: {
+
+  }
 });
